@@ -1,0 +1,1 @@
+"""Events subcommand group."""
