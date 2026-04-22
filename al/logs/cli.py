@@ -57,6 +57,52 @@ def _buffer_query_params(
     return params
 
 
+@app.command("tail")
+def tail_(
+    limit: int = typer.Option(50, "--limit", help="Max rows (1..500)"),
+    level: str | None = typer.Option(
+        None, "--level", help="info|warning|error|debug|critical"
+    ),
+    base_url: str = base_url_option(),
+) -> None:
+    """Tail recent platform logs from the PostgreSQL log buffer. Outputs JSON array to stdout."""
+    url = f"{base_url.rstrip('/')}/api/v0/platform/logs"
+    params: dict = {"limit": limit}
+    if level is not None:
+        params["level"] = level
+    try:
+        with httpx_client() as client:
+            response = client.get(url, params=params)
+            if response.status_code in (400, 422):
+                detail = response.text
+                try:
+                    body = response.json()
+                    if isinstance(body, dict) and "detail" in body:
+                        detail = body["detail"]
+                        if isinstance(detail, list):
+                            detail = json.dumps(detail)
+                except json.JSONDecodeError:
+                    pass
+                typer.echo(
+                    f"Request failed ({response.status_code}): {detail}", err=True
+                )
+                raise typer.Exit(1)
+            try:
+                response.raise_for_status()
+            except httpx.HTTPStatusError as err:
+                typer.echo(f"API error: {err.response.text}", err=True)
+                raise typer.Exit(1)
+            records = response.json()
+    except httpx.ConnectError:
+        handle_connection_error(base_url)
+    except httpx.TimeoutException:
+        handle_timeout_error(base_url)
+    if not isinstance(records, list):
+        typer.echo("Unexpected API response", err=True)
+        raise typer.Exit(1)
+    typer.echo(json.dumps(records, indent=2, default=str))
+
+
 @app.command("read")
 def read_(
     limit: int = typer.Option(
