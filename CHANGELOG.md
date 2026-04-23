@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Changed
+
+- `al inventory access-facts list`: `--action` flag renamed to `--action-slug`. **Breaking** for scripts using the old flag. (Phase 12 Step 13)
+- `al inventory artifact-bindings list`: `--access-fact`, `--resource`, `--account` flags replaced with `--target-type` and `--target-id`
+- `al inventory artifacts list`: renamed `--source-kind` flag to `--artifact-type`. **Breaking** for scripts using the old flag. (Phase 12 Step 7)
+
+### Added
+
+- `al reconciliation run --application-id <UUID>` — triggers artifact-first reconciliation and prints the eight-field run summary; exit code 0 on success, non-zero on error
+- `al inventory actions list` and `al inventory action <slug>` — read-only commands over the `GET /actions` and `GET /actions/{slug}` endpoints. No filters, no pagination — the vocabulary is 7 seeded slugs. Reference docs live at `docs/cli/inventory/actions.md`.
+
+### Removed
+
+- `al app reconcile` no longer prints `Roles:` and `Privileges:` summary lines. The `ReconciliationResult` response shape dropped `roles` / `privileges` fields as part of Phase 12 Step 1 (kernel). CLI output now shows only `Accounts:`.
+
 ## [0.1.1] - 2026-04-22
 
 ### Added
