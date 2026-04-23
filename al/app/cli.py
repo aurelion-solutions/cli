@@ -167,5 +167,3 @@ def run(
     else:
         typer.echo(f"Reconciled application {result['application_id']}")
         typer.echo(f"  Accounts: {result['accounts']}")
-        typer.echo(f"  Roles: {result['roles']}")
-        typer.echo(f"  Privileges: {result['privileges']}")
