@@ -10,6 +10,7 @@ from al.employees.cli import app as employees_app
 from al.nhi.cli import app as nhi_app
 from al.persons.cli import app as persons_app
 from al.policy.cli import app as policy_app
+from al.reconciliation.cli import app as reconciliation_app
 from al.secrets.cli import app as secrets_app
 
 app = typer.Typer()
@@ -23,6 +24,7 @@ app.add_typer(nhi_app, name="nhi")
 app.add_typer(persons_app, name="persons")
 app.add_typer(policy_app, name="policy")
 app.add_typer(logs_app, name="logs")
+app.add_typer(reconciliation_app, name="reconciliation")
 app.add_typer(secrets_app, name="secrets")
 app.add_typer(idp_app, name="idp")
 app.add_typer(iga_app, name="iga")

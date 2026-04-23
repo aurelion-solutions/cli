@@ -35,6 +35,9 @@ app.add_typer(customers, name="customers")
 subjects = typer.Typer()
 app.add_typer(subjects, name="subjects")
 # subject (singular) is registered as @app.command("subject") below
+actions = typer.Typer()
+app.add_typer(actions, name="actions")
+# action (singular) is registered as @app.command("action") below
 
 
 @accounts.command("list")
@@ -413,8 +416,8 @@ def list_artifacts(
     application: str | None = typer.Option(
         None, "--application", help="Application ID (UUID)"
     ),
-    source_kind: str | None = typer.Option(
-        None, "--source-kind", help="Filter by source kind"
+    artifact_type: str | None = typer.Option(
+        None, "--artifact-type", help="Filter by artifact type"
     ),
     limit: int = typer.Option(50, "--limit", help="Maximum number of results"),
     base_url: str = base_url_option(),
@@ -425,8 +428,8 @@ def list_artifacts(
     params: dict[str, str] = {}
     if application is not None:
         params["application_id"] = application
-    if source_kind is not None:
-        params["source_kind"] = source_kind
+    if artifact_type is not None:
+        params["artifact_type"] = artifact_type
     params["limit"] = str(limit)
     url = f"{base_url.rstrip('/')}/api/v0/access-artifacts"
     try:
@@ -478,7 +481,7 @@ def list_access_facts(
     subject: str | None = typer.Option(None, "--subject", help="Subject ID (UUID)"),
     resource: str | None = typer.Option(None, "--resource", help="Resource ID (UUID)"),
     account: str | None = typer.Option(None, "--account", help="Account ID (UUID)"),
-    action: str | None = typer.Option(None, "--action", help="Filter by action"),
+    action_slug: str | None = typer.Option(None, "--action-slug", help="Filter by action slug (e.g. read, write)"),
     effect: str | None = typer.Option(
         None, "--effect", help="Filter by effect (allow|deny)"
     ),
@@ -498,8 +501,8 @@ def list_access_facts(
         params["resource_id"] = resource
     if account is not None:
         params["account_id"] = account
-    if action is not None:
-        params["action"] = action
+    if action_slug is not None:
+        params["action_slug"] = action_slug
     if effect is not None:
         params["effect"] = effect
     if valid_at is not None:
@@ -529,11 +532,12 @@ def list_access_facts(
 @artifact_bindings.command("list")
 def list_artifact_bindings(
     artifact: str | None = typer.Option(None, "--artifact", help="Artifact ID (UUID)"),
-    access_fact: str | None = typer.Option(
-        None, "--access-fact", help="Access Fact ID (UUID)"
+    target_type: str | None = typer.Option(
+        None, "--target-type", help="Target type filter (access_fact|resource|account|subject)"
     ),
-    resource: str | None = typer.Option(None, "--resource", help="Resource ID (UUID)"),
-    account: str | None = typer.Option(None, "--account", help="Account ID (UUID)"),
+    target_id: str | None = typer.Option(
+        None, "--target-id", help="Target entity ID (UUID)"
+    ),
     limit: int = typer.Option(50, "--limit", help="Maximum number of results"),
     base_url: str = base_url_option(),
 ) -> None:
@@ -543,12 +547,10 @@ def list_artifact_bindings(
     params: dict[str, str] = {}
     if artifact is not None:
         params["artifact_id"] = artifact
-    if access_fact is not None:
-        params["access_fact_id"] = access_fact
-    if resource is not None:
-        params["resource_id"] = resource
-    if account is not None:
-        params["account_id"] = account
+    if target_type is not None:
+        params["target_type"] = target_type
+    if target_id is not None:
+        params["target_id"] = target_id
     params["limit"] = str(limit)
     url = f"{base_url.rstrip('/')}/api/v0/artifact-bindings"
     try:
@@ -1216,6 +1218,58 @@ def get_subject(
         handle_timeout_error(base_url)
     output = {**response_subject.json(), "attributes": response_attrs.json()}
     typer.echo(json.dumps(output, indent=2, default=str))
+
+
+# ---------------------------------------------------------------------------
+# Actions sub-commands (list) + action singular get (on parent app)
+# ---------------------------------------------------------------------------
+
+
+@actions.command("list")
+def list_actions(
+    base_url: str = base_url_option(),
+) -> None:
+    """List all actions in the reference vocabulary."""
+    import httpx
+
+    url = f"{base_url.rstrip('/')}/api/v0/actions"
+    try:
+        with httpx_client() as client:
+            response = client.get(url)
+            try:
+                response.raise_for_status()
+            except httpx.HTTPStatusError as err:
+                typer.echo(f"API error: {err.response.text}", err=True)
+                raise typer.Exit(1)
+    except httpx.ConnectError:
+        handle_connection_error(base_url)
+    except httpx.TimeoutException:
+        handle_timeout_error(base_url)
+    typer.echo(json.dumps(response.json(), indent=2, default=str))
+
+
+@app.command("action")
+def get_action(
+    slug: str = typer.Argument(..., help="Action slug (e.g. read, write)"),
+    base_url: str = base_url_option(),
+) -> None:
+    """Get an action by slug."""
+    import httpx
+
+    url = f"{base_url.rstrip('/')}/api/v0/actions/{slug}"
+    try:
+        with httpx_client() as client:
+            response = client.get(url)
+            try:
+                response.raise_for_status()
+            except httpx.HTTPStatusError as err:
+                typer.echo(f"API error: {err.response.text}", err=True)
+                raise typer.Exit(1)
+    except httpx.ConnectError:
+        handle_connection_error(base_url)
+    except httpx.TimeoutException:
+        handle_timeout_error(base_url)
+    typer.echo(json.dumps(response.json(), indent=2, default=str))
 
 
 @initiatives.command("update")
