@@ -15,7 +15,9 @@ app = typer.Typer(help="Artifact-first reconciliation operations.")
 
 @app.command("run")
 def run(
-    application_id: UUID = typer.Option(..., "--application-id", help="Application UUID to reconcile"),
+    application_id: UUID = typer.Option(
+        ..., "--application-id", help="Application UUID to reconcile"
+    ),
     base_url: str = base_url_option(),
 ):
     """Trigger a reconciliation run for the given application.
@@ -37,7 +39,10 @@ def run(
                 if err.response.status_code == 404:
                     typer.echo("Application not found", err=True)
                 else:
-                    typer.echo(f"API error {err.response.status_code}: {err.response.text}", err=True)
+                    typer.echo(
+                        f"API error {err.response.status_code}: {err.response.text}",
+                        err=True,
+                    )
                 raise typer.Exit(1)
     except httpx.ConnectError:
         handle_connection_error(base_url)
@@ -46,7 +51,9 @@ def run(
 
     result = response.json()
 
-    typer.echo(f"Reconciliation completed for application {result.get('application_id')}")
+    typer.echo(
+        f"Reconciliation completed for application {result.get('application_id')}"
+    )
     typer.echo(f"  started_at:          {result.get('started_at')}")
     typer.echo(f"  finished_at:         {result.get('finished_at')}")
     typer.echo(f"  artifacts_ingested:  {result.get('artifacts_ingested')}")

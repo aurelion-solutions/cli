@@ -481,7 +481,9 @@ def list_access_facts(
     subject: str | None = typer.Option(None, "--subject", help="Subject ID (UUID)"),
     resource: str | None = typer.Option(None, "--resource", help="Resource ID (UUID)"),
     account: str | None = typer.Option(None, "--account", help="Account ID (UUID)"),
-    action_slug: str | None = typer.Option(None, "--action-slug", help="Filter by action slug (e.g. read, write)"),
+    action_slug: str | None = typer.Option(
+        None, "--action-slug", help="Filter by action slug (e.g. read, write)"
+    ),
     effect: str | None = typer.Option(
         None, "--effect", help="Filter by effect (allow|deny)"
     ),
@@ -533,7 +535,9 @@ def list_access_facts(
 def list_artifact_bindings(
     artifact: str | None = typer.Option(None, "--artifact", help="Artifact ID (UUID)"),
     target_type: str | None = typer.Option(
-        None, "--target-type", help="Target type filter (access_fact|resource|account|subject)"
+        None,
+        "--target-type",
+        help="Target type filter (access_fact|resource|account|subject)",
     ),
     target_id: str | None = typer.Option(
         None, "--target-id", help="Target entity ID (UUID)"

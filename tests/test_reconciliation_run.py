@@ -84,4 +84,7 @@ def test_reconciliation_run_404(mock_client_class):
     )
 
     assert result.exit_code != 0
-    assert "not found" in result.output.lower() or "not found" in (result.stderr or "").lower()
+    assert (
+        "not found" in result.output.lower()
+        or "not found" in (result.stderr or "").lower()
+    )
