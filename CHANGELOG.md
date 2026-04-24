@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `al sod apply <file> [--created-by TEXT] [--dry-run]` — config-as-code idempotent upsert of SoD rules from YAML or JSON; capabilities referenced by slug; prints diff summary on success; `--dry-run` prints resolved payload without sending
+
 ### Changed
 
 - `al inventory access-facts list`: `--action` flag renamed to `--action-slug`. **Breaking** for scripts using the old flag. (Phase 12 Step 13)
@@ -14,6 +18,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `al sod evaluate <subject_id> [--at ISO8601]` — POST `/sod/evaluate`; omitting `--at` lets the server default to `now(UTC)`. (Phase 13 Step 17)
+- `al sod what-if <subject_id> [--override CAP_ID:SCOPE_KEY_ID:SCOPE_VALUE_OR_NULL:APP_UUID ...]` — POST `/sod/what-if` with synthetic capability overrides; `--override` is repeatable; literal `null` (case-insensitive) for scope_value sends JSON `null`; malformed override exits 2. (Phase 13 Step 17)
+- `al sod resolve-capabilities [--file PATH]` — POST `/sod/resolve-capabilities`; accepts `{"sources": [...]}` or top-level list; reads stdin when `--file` is omitted. (Phase 13 Step 17)
+- `al scan run [--triggered-by manual|api|schedule] [--scope-subject UUID] [--scope-application UUID]` — two-step: POST `/scan-runs` then POST `/scan-runs/{id}/run`; orphan pending run left as-is on step-2 failure. (Phase 13 Step 17)
+- `al scan list [--status] [--triggered-by] [--scope-subject UUID] [--scope-application UUID] [--limit INT] [--offset INT]` — GET `/scan-runs` with optional query params; default limit 50. (Phase 13 Step 17)
+- `al findings list [--scan-run INT] [--rule INT] [--severity] [--status] [--kind] [--subject UUID] [--limit INT] [--offset INT]` — GET `/findings` with audit-style filters; default limit 50. (Phase 13 Step 17)
+- `al feedback post --kind KIND --message TEXT [--rule INT] [--mapping INT] [--finding INT] [--subject UUID] [--payload-file PATH]` — POST `/feedbacks`; at least one of `--rule`, `--mapping`, `--finding` required client-side (exits 2 if missing). (Phase 13 Step 17)
+- Exit code 2 introduced for client-side validation failures (`--override` parsing, missing target FK for feedback, malformed JSON file). Exit code 1 remains for API/connection/timeout errors.
 - `al reconciliation run --application-id <UUID>` — triggers artifact-first reconciliation and prints the eight-field run summary; exit code 0 on success, non-zero on error
 - `al inventory actions list` and `al inventory action <slug>` — read-only commands over the `GET /actions` and `GET /actions/{slug}` endpoints. No filters, no pagination — the vocabulary is 7 seeded slugs. Reference docs live at `docs/cli/inventory/actions.md`.
 
