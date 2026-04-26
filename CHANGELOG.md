@@ -4,10 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.1.4] - 2026-04-26
 
 ### Added
 
+- `al llm profile list` — GET `/api/v0/llm/execution-profiles`; prints one profile per line (`id  name  model=<model_id>`). (Phase 14 Step 9)
+- `al llm profile show <id>` — GET `/api/v0/llm/execution-profiles/{id}`; prints profile as indented JSON. (Phase 14 Step 9)
+- `al llm profile create --name STR --model-id UUID [--param-overrides JSON|@path]` — POST `/api/v0/llm/execution-profiles`; prints created profile as JSON. (Phase 14 Step 9)
+- `al llm profile update <id> [--name STR] [--param-overrides JSON|@path]` — PATCH `/api/v0/llm/execution-profiles/{id}`; sends only supplied fields (no phantom nulls); `--param-overrides` replaces the dict. (Phase 14 Step 9)
+- `al llm profile delete <id> --yes` — DELETE `/api/v0/llm/execution-profiles/{id}`; requires `--yes` to confirm; exits 1 without it. (Phase 14 Step 9)
 - `al sod apply <file> [--created-by TEXT] [--dry-run]` — config-as-code idempotent upsert of SoD rules from YAML or JSON; capabilities referenced by slug; prints diff summary on success; `--dry-run` prints resolved payload without sending
 
 ### Changed
