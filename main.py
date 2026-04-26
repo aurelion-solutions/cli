@@ -6,6 +6,7 @@ from al.findings.cli import app as findings_app
 from al.idp.cli import app as idp_app
 from al.iga.cli import app as iga_app
 from al.inventory.cli import app as inventory_app
+from al.llm.cli import app as llm_app
 from al.logs.cli import app as logs_app
 from al.employee_records.cli import app as employee_records_app
 from al.employees.cli import app as employees_app
@@ -26,6 +27,7 @@ app.add_typer(employees_app, name="employees")
 app.add_typer(feedback_app, name="feedback")
 app.add_typer(findings_app, name="findings")
 app.add_typer(inventory_app, name="inventory")
+app.add_typer(llm_app, name="llm")
 app.add_typer(nhi_app, name="nhi")
 app.add_typer(persons_app, name="persons")
 app.add_typer(policy_app, name="policy")
