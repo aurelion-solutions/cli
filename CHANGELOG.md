@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+## [0.1.5] - 2026-04-27
+
+### Added
+
+- Phase 15 Data Lake Migration complete (20/20 milestones)
+- `al lake status [--base-url URL]` — calls `GET /api/v0/lake/status`; prints catalog URI, warehouse URI, storage provider, and per-table snapshot metadata as indented JSON
+- `al lake compact [--table ...] [--retention-days N] [--orphan-older-than-hours N] [--target-file-size-mb N] [--base-url URL]` — calls `POST /api/v0/lake/compaction`
+- `al lake migrate-from-pg [--dataset all|access_artifacts|access_facts] [--batch-size N] [--resume <run_id>] [--poll-interval N]` — PG → Iceberg migration client; polls until terminal
+- `al datalake batches list [--limit INT] [--cursor STR] [--base-url URL]` — calls `GET /api/v0/datalake/batches`; prints paginated batch list as indented JSON
+- `al/lake/` package with HTTP client and Typer subapp
+
 ## [0.1.4] - 2026-04-26
 
 ### Added
