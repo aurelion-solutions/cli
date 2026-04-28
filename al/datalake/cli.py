@@ -150,3 +150,33 @@ def delete(
     except httpx.TimeoutException:
         handle_timeout_error(base_url)
     typer.echo("Lake batch deleted")
+
+
+@batches.command("list")
+def list_batches(
+    limit: int = typer.Option(20, "--limit", help="Max items to return (1–200)", min=1, max=200),
+    cursor: str | None = typer.Option(None, "--cursor", help="Opaque pagination cursor"),
+    base_url: str = base_url_option(),
+) -> None:
+    """List recent lake batches (newest first)."""
+    import httpx
+
+    params: dict[str, str] = {"limit": str(limit)}
+    if cursor is not None:
+        params["cursor"] = cursor
+
+    url = f"{base_url.rstrip('/')}/api/v0/datalake/batches"
+    try:
+        with httpx_client() as client:
+            response = client.get(url, params=params)
+            try:
+                response.raise_for_status()
+            except httpx.HTTPStatusError as err:
+                typer.echo(f"API error: {err.response.text}", err=True)
+                raise typer.Exit(1)
+    except httpx.ConnectError:
+        handle_connection_error(base_url)
+    except httpx.TimeoutException:
+        handle_timeout_error(base_url)
+    result = response.json()
+    typer.echo(json.dumps(result, indent=2, default=str))

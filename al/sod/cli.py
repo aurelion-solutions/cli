@@ -19,9 +19,15 @@ app = typer.Typer()
 
 @app.command("apply")
 def apply(
-    file: Path = typer.Argument(..., help="Path to YAML or JSON file with SoD rule definitions"),
-    created_by: str | None = typer.Option(None, "--created-by", help="Actor identifier recorded on created rules"),
-    dry_run: bool = typer.Option(False, "--dry-run", help="Print payload without sending"),
+    file: Path = typer.Argument(
+        ..., help="Path to YAML or JSON file with SoD rule definitions"
+    ),
+    created_by: str | None = typer.Option(
+        None, "--created-by", help="Actor identifier recorded on created rules"
+    ),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Print payload without sending"
+    ),
     base_url: str = base_url_option(),
 ) -> None:
     """Apply SoD rules from a config file (config-as-code, idempotent).
@@ -88,7 +94,10 @@ def apply(
             try:
                 response.raise_for_status()
             except httpx.HTTPStatusError as err:
-                typer.echo(f"API error ({err.response.status_code}): {err.response.text}", err=True)
+                typer.echo(
+                    f"API error ({err.response.status_code}): {err.response.text}",
+                    err=True,
+                )
                 raise typer.Exit(1)
     except httpx.ConnectError:
         handle_connection_error(base_url)
@@ -104,7 +113,9 @@ def apply(
         f"conditions: +{result.get('conditions_created', 0)} -{result.get('conditions_deleted', 0)}"
     )
     if result.get("unknown_capabilities"):
-        typer.echo(f"ERROR: unknown capabilities: {result['unknown_capabilities']}", err=True)
+        typer.echo(
+            f"ERROR: unknown capabilities: {result['unknown_capabilities']}", err=True
+        )
         raise typer.Exit(1)
 
 

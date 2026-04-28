@@ -1,6 +1,7 @@
 import typer
 from al.app.cli import app as app_app
 from al.datalake.cli import app as datalake_app
+from al.lake.cli import app as lake_app
 from al.feedback.cli import app as feedback_app
 from al.findings.cli import app as findings_app
 from al.idp.cli import app as idp_app
@@ -22,6 +23,7 @@ app = typer.Typer()
 
 app.add_typer(app_app, name="app")
 app.add_typer(datalake_app, name="datalake")
+app.add_typer(lake_app, name="lake")
 app.add_typer(employee_records_app, name="employee-records")
 app.add_typer(employees_app, name="employees")
 app.add_typer(feedback_app, name="feedback")
