@@ -304,7 +304,7 @@ def resolve_capabilities(
         )
         raise typer.Exit(2)
 
-    url = f"{base_url.rstrip('/')}/api/v0/sod/resolve-capabilities"
+    url = f"{base_url.rstrip('/')}/api/v0/capability-preview/resolve"
     try:
         with httpx_client() as client:
             response = client.post(url, json=body)

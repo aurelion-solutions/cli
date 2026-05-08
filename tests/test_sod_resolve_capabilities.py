@@ -91,7 +91,7 @@ def test_resolve_from_stdin(mock_client_class) -> None:
 
     assert result.exit_code == 0
     call_url = mock_client.post.call_args[0][0]
-    assert "/api/v0/sod/resolve-capabilities" in call_url
+    assert "/api/v0/capability-preview/resolve" in call_url
 
 
 @patch("al.sod.cli.httpx_client")
