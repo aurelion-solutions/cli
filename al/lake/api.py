@@ -2,51 +2,13 @@
 #
 # SPDX-License-Identifier: BUSL-1.1
 
-"""HTTP client wrappers for /api/v0/lake-migrations and /api/v0/lake endpoints."""
+"""HTTP client wrappers for /api/v0/lake endpoints."""
 
 from __future__ import annotations
 
 from typing import Any
 
-import httpx
-from al.config import DEFAULT_HTTP_TIMEOUT, httpx_client
-
-
-class LakeMigrationClient:
-    """Thin HTTP client for lake migration API endpoints."""
-
-    def __init__(self, base_url: str) -> None:
-        self._base = base_url.rstrip("/")
-
-    def start_migration(
-        self,
-        *,
-        dataset: str,
-        batch_size: int = 5000,
-        resume: str | None = None,
-    ) -> Any:
-        """POST /api/v0/lake-migrations → response body (dict or list)."""
-        url = f"{self._base}/api/v0/lake-migrations"
-        params: dict[str, str] = {}
-        if resume is not None:
-            params["resume"] = resume
-
-        with httpx.Client(timeout=DEFAULT_HTTP_TIMEOUT) as client:
-            resp = client.post(
-                url,
-                json={"dataset": dataset, "batch_size": batch_size},
-                params=params,
-            )
-            resp.raise_for_status()
-            return resp.json()
-
-    def get_run(self, run_id: str) -> dict[str, Any]:
-        """GET /api/v0/lake-migrations/{run_id}."""
-        url = f"{self._base}/api/v0/lake-migrations/{run_id}"
-        with httpx.Client(timeout=DEFAULT_HTTP_TIMEOUT) as client:
-            resp = client.get(url)
-            resp.raise_for_status()
-            return resp.json()  # type: ignore[return-value]
+from al.config import httpx_client
 
 
 class LakeMaintenanceClient:

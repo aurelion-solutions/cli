@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- CLI test suite consolidated: 30 trivial files merged into 4 parametrized files, 143 tests preserved, file count 53 → 27
+
+### Removed
+
+- `al lake migrate-from-pg` command and `LakeMigrationClient` retired (kernel `engines/lake_migration` slice retired in Phase 17 Step 13). `al lake status`, `al lake compact`, and `al datalake` are unaffected.
+- `--event-type` flag from `al logs buffer` — the underlying `GET /api/v0/log-buffer` endpoint no longer accepts an `event_type` filter parameter (Phase 17 Step 4).
+
 ## [0.1.5] - 2026-04-27
 
 ### Added

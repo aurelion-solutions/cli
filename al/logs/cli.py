@@ -24,7 +24,6 @@ def _buffer_query_params(
     initiator_id: str | None,
     actor_type: str | None,
     actor_id: str | None,
-    event_type: str | None,
     level: str | None,
     from_ts: str | None,
     to_ts: str | None,
@@ -46,8 +45,6 @@ def _buffer_query_params(
         params["actor_type"] = actor_type
     if actor_id is not None:
         params["actor_id"] = actor_id
-    if event_type is not None:
-        params["event_type"] = event_type
     if level is not None:
         params["level"] = level
     if from_ts is not None:
@@ -160,9 +157,6 @@ def buffer_(
     ),
     actor_type: str | None = typer.Option(None, "--actor-type", help="With --actor-id"),
     actor_id: str | None = typer.Option(None, "--actor-id", help="With --actor-type"),
-    event_type: str | None = typer.Option(
-        None, "--event-type", help="Exact event_type match"
-    ),
     level: str | None = typer.Option(
         None, "--level", help="Log level (e.g. info, error)"
     ),
@@ -194,7 +188,6 @@ def buffer_(
         initiator_id=initiator_id,
         actor_type=actor_type,
         actor_id=actor_id,
-        event_type=event_type,
         level=level,
         from_ts=from_ts,
         to_ts=to_ts,

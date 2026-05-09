@@ -3,7 +3,6 @@
 import json
 from unittest.mock import MagicMock, patch
 
-import pytest
 import httpx
 from typer.testing import CliRunner
 
@@ -94,7 +93,9 @@ def test_list_with_cursor_propagates(mock_client_class: MagicMock) -> None:
 def test_list_400_prints_error_and_exits_1(mock_client_class: MagicMock) -> None:
     """400 response: CLI prints 'API error:' and exits with code 1."""
     error_body = {"detail": "Invalid cursor"}
-    mock_client_class.return_value = _mock_client(_mock_response(error_body, status_code=400))
+    mock_client_class.return_value = _mock_client(
+        _mock_response(error_body, status_code=400)
+    )
 
     result = runner.invoke(app, ["datalake", "batches", "list", "--cursor", "bad!!!"])
 
@@ -114,4 +115,8 @@ def test_list_connection_error_handled(mock_client_class: MagicMock) -> None:
     result = runner.invoke(app, ["datalake", "batches", "list"])
 
     # Should not raise — exit code non-zero
-    assert result.exit_code != 0 or "error" in result.output.lower() or "connect" in result.output.lower()
+    assert (
+        result.exit_code != 0
+        or "error" in result.output.lower()
+        or "connect" in result.output.lower()
+    )

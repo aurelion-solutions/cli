@@ -154,8 +154,12 @@ def delete(
 
 @batches.command("list")
 def list_batches(
-    limit: int = typer.Option(20, "--limit", help="Max items to return (1–200)", min=1, max=200),
-    cursor: str | None = typer.Option(None, "--cursor", help="Opaque pagination cursor"),
+    limit: int = typer.Option(
+        20, "--limit", help="Max items to return (1–200)", min=1, max=200
+    ),
+    cursor: str | None = typer.Option(
+        None, "--cursor", help="Opaque pagination cursor"
+    ),
     base_url: str = base_url_option(),
 ) -> None:
     """List recent lake batches (newest first)."""

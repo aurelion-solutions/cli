@@ -55,8 +55,6 @@ def test_logs_buffer_passes_filters_and_order(mock_client_class):
         [
             "logs",
             "buffer",
-            "--event-type",
-            "connector.command.received",
             "--order",
             "asc",
             "--limit",
@@ -68,7 +66,7 @@ def test_logs_buffer_passes_filters_and_order(mock_client_class):
 
     assert result.exit_code == 0
     params = mock_client.get.call_args[1]["params"]
-    assert params["event_type"] == "connector.command.received"
+    assert "event_type" not in params
     assert params["order"] == "asc"
     assert params["limit"] == 50
     assert params["level"] == "info"
