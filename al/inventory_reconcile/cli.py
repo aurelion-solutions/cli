@@ -1,4 +1,4 @@
-"""Reconciliation subcommand for al CLI."""
+"""inventory-reconcile subcommand for al CLI."""
 
 from uuid import UUID
 
@@ -10,7 +10,7 @@ from al.config import (
     httpx_client,
 )
 
-app = typer.Typer(help="Artifact-first reconciliation operations.")
+app = typer.Typer(help="Inventory reconcile operations.")
 
 
 @app.command("run")
@@ -20,14 +20,14 @@ def run(
     ),
     base_url: str = base_url_option(),
 ):
-    """Trigger a reconciliation run for the given application.
+    """Trigger an inventory reconcile run for the given application.
 
-    POSTs to /api/v0/reconciliation/runs and displays the eight-field summary.
+    POSTs to /api/v0/inventory-reconciles/runs and displays the eight-field summary.
     Exit code 0 on success, non-zero on error.
     """
     import httpx
 
-    url = f"{base_url.rstrip('/')}/api/v0/reconciliation/runs"
+    url = f"{base_url.rstrip('/')}/api/v0/inventory-reconciles/runs"
     payload = {"application_id": str(application_id)}
 
     try:
@@ -52,7 +52,7 @@ def run(
     result = response.json()
 
     typer.echo(
-        f"Reconciliation completed for application {result.get('application_id')}"
+        f"Inventory reconcile completed for application {result.get('application_id')}"
     )
     typer.echo(f"  started_at:          {result.get('started_at')}")
     typer.echo(f"  finished_at:         {result.get('finished_at')}")

@@ -22,8 +22,8 @@ PIPELINE_DETAIL = {
     "content_hash": "abc123def456",
     "source_path": "pipelines/application_sync.yaml",
     "steps": [
-        {"id": "reconcile", "engine": "reconciliation", "action": "run"},
-        {"id": "sync", "engine": "sync_apply", "action": "apply"},
+        {"id": "reconcile", "engine": "inventory_reconcile", "action": "run"},
+        {"id": "inventory_sync", "engine": "inventory_sync", "action": "apply"},
     ],
 }
 

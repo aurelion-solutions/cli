@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.10.0] - 2026-05-12
+
+### Changed
+
+- **`al employees list` and `al persons list` accept `--limit` and `--offset` (Phase 20 M-C).** Both commands now pass `limit` (default 1000, 1-1000) and `offset` (default 0) to the kernel endpoint as query parameters, matching the pagination contract. The response is the full kernel envelope `{items, total, limit, offset}` printed verbatim.
+- Phase 19 Step A2: `al reconciliation` command renamed to `al inventory-reconcile`
+- REST endpoint updated to `/api/v0/inventory-reconciles/runs`
+
 ## [0.9.0] - 2026-05-12
 
 ### Added

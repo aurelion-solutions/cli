@@ -13,9 +13,6 @@ from al.connectors.cli import app as connectors_app
 
 app = typer.Typer()
 
-reconcile = typer.Typer()
-
-app.add_typer(reconcile, name="reconcile")
 app.add_typer(connectors_app, name="connectors")
 
 
@@ -140,30 +137,3 @@ def delete(
     typer.echo("Application deleted")
 
 
-@reconcile.command("run")
-def run(
-    app_id: str = typer.Option(..., "--app-id", help="Application ID to reconcile"),
-    base_url: str = base_url_option(),
-):
-    """Trigger reconciliation for an application."""
-    import httpx
-
-    url = f"{base_url.rstrip('/')}/api/v0/applications/{app_id}/reconcile"
-    try:
-        with httpx_client() as client:
-            response = client.post(url)
-            response.raise_for_status()
-    except httpx.ConnectError:
-        handle_connection_error(base_url)
-    except httpx.TimeoutException:
-        handle_timeout_error(base_url)
-    result = response.json()
-    if response.status_code == 202:
-        typer.echo(
-            f"Reconciliation started for application {result.get('application_id', app_id)}"
-        )
-        typer.echo(f"  correlation_id: {result.get('correlation_id', '')}")
-        typer.echo("  Follow progress in platform logs / log buffer.")
-    else:
-        typer.echo(f"Reconciled application {result['application_id']}")
-        typer.echo(f"  Accounts: {result['accounts']}")

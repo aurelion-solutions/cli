@@ -17,14 +17,16 @@ app = typer.Typer()
 @app.command("list")
 def list_(
     base_url: str = base_url_option(),
+    limit: int = typer.Option(1000, '--limit', min=1, max=1000, help='Page size (1-1000).'),
+    offset: int = typer.Option(0, '--offset', min=0, help='Page offset.'),
 ) -> None:
-    """List all employees."""
+    """List employees (one page)."""
     import httpx
 
     url = f"{base_url.rstrip('/')}/api/v0/employees"
     try:
         with httpx_client() as client:
-            response = client.get(url)
+            response = client.get(url, params={'limit': limit, 'offset': offset})
             try:
                 response.raise_for_status()
             except httpx.HTTPStatusError as err:

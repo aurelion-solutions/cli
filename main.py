@@ -15,7 +15,7 @@ from al.nhi.cli import app as nhi_app
 from al.persons.cli import app as persons_app
 from al.pipelines.cli import app as pipelines_app
 from al.policy.cli import app as policy_app
-from al.reconciliation.cli import app as reconciliation_app
+from al.inventory_reconcile.cli import app as inventory_reconcile_app
 from al.scan.cli import app as scan_app
 from al.secrets.cli import app as secrets_app
 from al.sod.cli import app as sod_app
@@ -36,7 +36,7 @@ app.add_typer(persons_app, name="persons")
 app.add_typer(pipelines_app, name="pipelines")
 app.add_typer(policy_app, name="policy")
 app.add_typer(logs_app, name="logs")
-app.add_typer(reconciliation_app, name="reconciliation")
+app.add_typer(inventory_reconcile_app, name="inventory-reconcile")
 app.add_typer(scan_app, name="scan")
 app.add_typer(secrets_app, name="secrets")
 app.add_typer(idp_app, name="idp")

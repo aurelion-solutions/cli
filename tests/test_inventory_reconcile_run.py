@@ -1,4 +1,4 @@
-"""Tests for al reconciliation run command."""
+"""Tests for al inventory-reconcile run command."""
 
 from unittest.mock import MagicMock, patch
 
@@ -9,9 +9,9 @@ from main import app
 runner = CliRunner()
 
 
-@patch("al.reconciliation.cli.httpx_client")
-def test_reconciliation_run_happy_path(mock_client_class):
-    """al reconciliation run returns summary and exits 0 on HTTP 200."""
+@patch("al.inventory_reconcile.cli.httpx_client")
+def test_inventory_reconcile_run_happy_path(mock_client_class):
+    """al inventory-reconcile run returns summary and exits 0 on HTTP 200."""
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.json.return_value = {
@@ -35,7 +35,7 @@ def test_reconciliation_run_happy_path(mock_client_class):
     result = runner.invoke(
         app,
         [
-            "reconciliation",
+            "inventory-reconcile",
             "run",
             "--application-id",
             "550e8400-e29b-41d4-a716-446655440000",
@@ -45,15 +45,15 @@ def test_reconciliation_run_happy_path(mock_client_class):
     assert result.exit_code == 0
     mock_client.post.assert_called_once()
     call_url = mock_client.post.call_args[0][0]
-    assert "/api/v0/reconciliation/runs" in call_url
+    assert "/api/v0/inventory-reconciles/runs" in call_url
 
     assert "facts_created" in result.output
     assert "artifacts_ingested" in result.output
 
 
-@patch("al.reconciliation.cli.httpx_client")
-def test_reconciliation_run_404(mock_client_class):
-    """al reconciliation run exits non-zero on HTTP 404."""
+@patch("al.inventory_reconcile.cli.httpx_client")
+def test_inventory_reconcile_run_404(mock_client_class):
+    """al inventory-reconcile run exits non-zero on HTTP 404."""
     import httpx
 
     mock_response = MagicMock()
@@ -76,7 +76,7 @@ def test_reconciliation_run_404(mock_client_class):
     result = runner.invoke(
         app,
         [
-            "reconciliation",
+            "inventory-reconcile",
             "run",
             "--application-id",
             "00000000-0000-0000-0000-000000000001",

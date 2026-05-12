@@ -49,16 +49,36 @@ _CASES: list[ReadOnlyTestCase] = [
         patch_target="al.employees.cli.httpx_client",
         argv=["employees", "list"],
         expected_url_substring="/api/v0/employees",
-        response_data=[
-            {
-                "id": _UUID,
-                "person_id": _UUID2,
-                "is_locked": False,
-                "description": "Alice",
-            }
-        ],
+        response_data={
+            "items": [
+                {
+                    "id": _UUID,
+                    "person_id": _UUID2,
+                    "is_locked": False,
+                    "description": "Alice",
+                    "org_unit_id": None,
+                }
+            ],
+            "total": 1,
+            "limit": 1000,
+            "offset": 0,
+        },
         expected_output_substring=None,
-        expected_query_params=None,
+        expected_query_params={"limit": 1000, "offset": 0},
+    ),
+    ReadOnlyTestCase(
+        test_id="employees-list-custom-pagination",
+        patch_target="al.employees.cli.httpx_client",
+        argv=["employees", "list", "--limit", "25", "--offset", "50"],
+        expected_url_substring="/api/v0/employees",
+        response_data={
+            "items": [],
+            "total": 100,
+            "limit": 25,
+            "offset": 50,
+        },
+        expected_output_substring=None,
+        expected_query_params={"limit": 25, "offset": 50},
     ),
     ReadOnlyTestCase(
         test_id="employees-get",
@@ -96,9 +116,28 @@ _CASES: list[ReadOnlyTestCase] = [
         patch_target="al.persons.cli.httpx_client",
         argv=["persons", "list"],
         expected_url_substring="/api/v0/persons",
-        response_data=[{"id": _UUID, "external_id": "ext-1", "description": "Alice"}],
+        response_data={
+            "items": [{"id": _UUID, "external_id": "ext-1", "full_name": "Alice"}],
+            "total": 1,
+            "limit": 1000,
+            "offset": 0,
+        },
         expected_output_substring=None,
-        expected_query_params=None,
+        expected_query_params={"limit": 1000, "offset": 0},
+    ),
+    ReadOnlyTestCase(
+        test_id="persons-list-custom-pagination",
+        patch_target="al.persons.cli.httpx_client",
+        argv=["persons", "list", "--limit", "25", "--offset", "50"],
+        expected_url_substring="/api/v0/persons",
+        response_data={
+            "items": [],
+            "total": 200,
+            "limit": 25,
+            "offset": 50,
+        },
+        expected_output_substring=None,
+        expected_query_params={"limit": 25, "offset": 50},
     ),
     ReadOnlyTestCase(
         test_id="persons-get",
