@@ -13,6 +13,7 @@ from al.employee_records.cli import app as employee_records_app
 from al.employees.cli import app as employees_app
 from al.nhi.cli import app as nhi_app
 from al.persons.cli import app as persons_app
+from al.pipelines.cli import app as pipelines_app
 from al.policy.cli import app as policy_app
 from al.reconciliation.cli import app as reconciliation_app
 from al.scan.cli import app as scan_app
@@ -32,6 +33,7 @@ app.add_typer(inventory_app, name="inventory")
 app.add_typer(llm_app, name="llm")
 app.add_typer(nhi_app, name="nhi")
 app.add_typer(persons_app, name="persons")
+app.add_typer(pipelines_app, name="pipelines")
 app.add_typer(policy_app, name="policy")
 app.add_typer(logs_app, name="logs")
 app.add_typer(reconciliation_app, name="reconciliation")

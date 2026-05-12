@@ -1,5 +1,6 @@
 """Pytest configuration."""
 
+import json
 import sys
 from typing import Any
 from unittest.mock import MagicMock
@@ -21,12 +22,14 @@ def make_mock_http_client(
     """Return a MagicMock wired as an httpx context manager.
 
     The named HTTP method (get/post/patch/delete) is pre-configured to return
-    a response mock with .json(), .status_code, and .raise_for_status.
+    a response mock with .json(), .text, .status_code, and .raise_for_status.
     The factory does NOT import httpx — callers construct exceptions themselves.
     """
+    body = return_value if return_value is not None else {}
     mock_response = MagicMock()
     mock_response.status_code = status_code
-    mock_response.json.return_value = return_value if return_value is not None else {}
+    mock_response.json.return_value = body
+    mock_response.text = json.dumps(body, default=str)
     if raise_for_status_exc is not None:
         mock_response.raise_for_status = MagicMock(side_effect=raise_for_status_exc)
     else:

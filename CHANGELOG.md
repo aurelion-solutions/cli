@@ -4,7 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.9.0] - 2026-05-12
+
+### Added
+
+- Phase 18 Native Pipeline Orchestrator CLI surface
+- `al pipelines list [--format text|json] [--base-url URL]` — GET `/api/v0/pipelines`; prints one line per pipeline (name, version, step_count, trigger count)
+- `al pipelines show NAME [--format text|json] [--base-url URL]` — GET `/api/v0/pipelines/{name}`; prints header block, triggers, and steps; 404 → human-readable error
+- `al pipelines runs list [--pipeline NAME] [--status STATUS]... [--limit N] [--offset N] [--format text|json] [--base-url URL]` — GET `/api/v0/pipeline-runs`; `--status` repeatable; pagination delegated to API
+- `al pipelines runs get RUN_ID [--format text|json] [--base-url URL]` — GET `/api/v0/pipeline-runs/{run_id}`; `RUN_ID` is UUID (Typer-validated); 404 → human-readable error
+- `al pipelines run NAME [--args JSON] [--version N] [--format text|json] [--base-url URL]` — POST `/api/v0/pipeline-runs`; `--args` must be a JSON object (exit 2 on invalid); omits `pipeline_version` when `--version` not supplied; treats 200 (idempotent dedupe) and 201 (fresh insert) as success; 404 → `Pipeline not loaded`, 422 with detail → `Invalid args: <detail>`, other errors → generic API error
+- `al pipelines runs cancel RUN_ID [--format text|json] [--base-url URL]` — POST `/api/v0/pipeline-runs/{run_id}/cancel`; 404 → `Pipeline run not found`, 409 → kernel detail verbatim
+- `al pipelines runs retry RUN_ID [--format text|json] [--base-url URL]` — POST `/api/v0/pipeline-runs/{run_id}/retry`; 404 → `Pipeline run not found`, 409 → kernel detail verbatim; output includes `retry_of_run_id` field
 
 ### Changed
 
